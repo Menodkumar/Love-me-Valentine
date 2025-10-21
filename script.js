@@ -6,18 +6,7 @@ const yesBtn = document.querySelector(".js-yes-btn");
 const noBtn = document.querySelector(".js-no-btn");
 const bgMusic = document.getElementById("bgMusic");
 
-// Start background music on first user interaction
-document.body.addEventListener(
-  "click",
-  () => {
-    if (bgMusic.paused) {
-      bgMusic.play().catch((err) => console.log("Music autoplay blocked:", err));
-    }
-  },
-  { once: true }
-);
-
-// Function to move the "No" button randomly (safe area within container)
+// Function to move the "No" button randomly (supports both touch & mouse)
 function moveNoButton() {
   const containerRect = questionContainer.getBoundingClientRect();
   const btnRect = noBtn.getBoundingClientRect();
@@ -32,17 +21,23 @@ function moveNoButton() {
   noBtn.style.top = `${newY}px`;
 }
 
-// Move on hover (for PC)
+// Move button on hover (desktop)
 noBtn.addEventListener("mouseover", moveNoButton);
 
-// Move on touch (for phone)
+// Move button on touch (mobile)
 noBtn.addEventListener("touchstart", (e) => {
-  e.preventDefault(); // stop accidental click
+  e.preventDefault(); // prevent accidental click
   moveNoButton();
 });
 
-// Yes button functionality
+// Yes button functionality (starts music here)
 yesBtn.addEventListener("click", () => {
+  // Start the background music
+  if (bgMusic.paused) {
+    bgMusic.play().catch((err) => console.log("Music blocked:", err));
+  }
+
+  // Hide question and show loader
   questionContainer.style.display = "none";
   heartLoader.style.display = "inherit";
 
